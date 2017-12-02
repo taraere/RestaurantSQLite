@@ -3,11 +3,15 @@ package com.example.tara.restaurantrevisitedsqlite;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -26,16 +30,24 @@ import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
-public class MenuFragment extends Fragment {
+public class MenuFragment extends ListFragment {
 
-    List<String> foodPlatters = new ArrayList<>();
-    JSONObject c;
+    private List<String> foodPlatters = new ArrayList<>();
+    private JSONObject c;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         final Bundle arguments = this.getArguments();
+
+        // add adapter to adapt categories into views
+        Context context = getActivity().getApplicationContext();
+
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                context, android.R.layout.simple_list_item_1, foodPlatters);
+
+        this.setListAdapter(adapter);
 
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this.getContext());
@@ -56,14 +68,22 @@ public class MenuFragment extends Fragment {
                                 c = courses.getJSONObject(i);
                                 String sCategory = c.getString("category");
 
-                                if (sCategory.equals(arguments)){
+                                Log.d("sCategories", sCategory);
+
+                                String value = arguments.getString("category");
+                                Log.d("category in bundle", value);
+
+                                if (sCategory.equals(value)){
 
                                     String sName = c.getString("name");
                                     foodPlatters.add(sName);
+                                    Log.d("foodPlatters", String.valueOf(foodPlatters));
                                 }
+                                adapter.notifyDataSetChanged();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            Log.d(TAG, "onErrorResponse: courses stuff");
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -83,4 +103,24 @@ public class MenuFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_menu, container, false);
     }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+
+        OrderFragment orderFragment = new OrderFragment();
+        String s = foodPlatters.get(position);
+
+        Bundle args = new Bundle();
+        args.putString("category", s);
+        orderFragment.setArguments(args);
+
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, orderFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+
 }

@@ -1,6 +1,7 @@
 package com.example.tara.restaurantrevisitedsqlite;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -38,6 +39,15 @@ public class CategoriesFragment extends ListFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // add adapter to adapt categories into views
+        Context context = getActivity().getApplicationContext();
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                context, android.R.layout.simple_list_item_1, foodCategories);
+
+        this.setListAdapter(adapter);
+
         String url = "https://resto.mprog.nl/categories";
 
         // Instantiate the RequestQueue.
@@ -72,13 +82,6 @@ public class CategoriesFragment extends ListFragment {
 
         // add request to RequestQueue
         queue.add(stringRequest);
-
-        // add adapter to adapt categories into views
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this.getContext(),
-                android.R.layout.simple_list_item_1,
-                foodCategories);
-        this.setListAdapter(adapter);
     }
 
     @Override
