@@ -34,6 +34,7 @@ public class MenuFragment extends ListFragment {
 
     private List<String> foodPlatters = new ArrayList<>();
     private JSONObject c;
+    private MenuAdapter menuAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -110,6 +111,7 @@ public class MenuFragment extends ListFragment {
 
         OrderFragment orderFragment = new OrderFragment();
         String s = foodPlatters.get(position);
+        // something with the adapters and putting things into sqlite
 
         Bundle args = new Bundle();
         args.putString("category", s);
@@ -121,6 +123,4 @@ public class MenuFragment extends ListFragment {
                 .addToBackStack(null)
                 .commit();
     }
-
-
 }

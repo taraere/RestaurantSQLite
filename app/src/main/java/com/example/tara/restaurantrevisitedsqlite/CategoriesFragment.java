@@ -2,6 +2,7 @@ package com.example.tara.restaurantrevisitedsqlite;
 
 
 import android.content.Context;
+import android.net.http.RequestQueue;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,9 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -34,41 +36,35 @@ import java.util.List;
 public class CategoriesFragment extends ListFragment {
 
     private String TAG = "Error";
-    private List<String> foodCategories = new ArrayList<>();
+    public ArrayList<String> foodCategories = new ArrayList<>();;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // add adapter to adapt categories into views
-        Context context = getActivity().getApplicationContext();
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                context, android.R.layout.simple_list_item_1, foodCategories);
-
-        this.setListAdapter(adapter);
-
-        String url = "https://resto.mprog.nl/categories";
-
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this.getContext());
+        // add adapter to adapt categories into views
+        String url = "http://resto.mprog.nl/categories";
 
         // request string response from url
-        JsonObjectRequest stringRequest = new JsonObjectRequest(
+        JsonObjectRequest jObjRequest = new JsonObjectRequest(
                 Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
                             JSONArray courses = response.getJSONArray("categories");
-
                             for (int i = 0; i < courses.length(); i++) {
                                 String sCourse = courses.getString(i);
                                 // add to array of courses
                                 foodCategories.add(sCourse);
+                                Log.d("foodCategories", String.valueOf(foodCategories));
                             }
+                            showFragment(foodCategories);
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            Log.e("json", e.toString());
                         }
 
                     }
@@ -76,12 +72,13 @@ public class CategoriesFragment extends ListFragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 System.out.println("No internet connection");
-                Log.d(TAG, "onErrorResponse: No internet connection");
+                Toast.makeText(getContext(), "No internet connection", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onErrorResponse: No internet connection", error);
             }
         });
 
         // add request to RequestQueue
-        queue.add(stringRequest);
+        queue.add(jObjRequest);
     }
 
     @Override
@@ -112,7 +109,13 @@ public class CategoriesFragment extends ListFragment {
                 .commit();
     }
 
-    public List<String> getFoodCategories() {
+    public void showFragment(ArrayList<String> al) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                getContext(), android.R.layout.simple_list_item_1, al);
+        this.setListAdapter(adapter);
+    }
+
+    public ArrayList<String> getFoodCategories() {
         return foodCategories;
     }
 
