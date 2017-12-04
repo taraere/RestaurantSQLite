@@ -1,6 +1,7 @@
 package com.example.tara.restaurantrevisitedsqlite;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -35,6 +36,7 @@ public class MenuFragment extends ListFragment {
     private List<String> foodPlatters = new ArrayList<>();
     private JSONObject c;
     private MenuAdapter menuAdapter;
+    String output;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,8 +78,10 @@ public class MenuFragment extends ListFragment {
 
                                 if (sCategory.equals(value)){
 
+                                    String sPrice = c.getString("price");
                                     String sName = c.getString("name");
-                                    foodPlatters.add(sName);
+                                    output = sName + "    $" + sPrice + "0";
+                                    foodPlatters.add(output);
                                     Log.d("foodPlatters", String.valueOf(foodPlatters));
                                 }
                                 adapter.notifyDataSetChanged();
@@ -109,18 +113,14 @@ public class MenuFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        OrderFragment orderFragment = new OrderFragment();
         String s = foodPlatters.get(position);
+
         // something with the adapters and putting things into sqlite
 
-        Bundle args = new Bundle();
-        args.putString("category", s);
-        orderFragment.setArguments(args);
+        MyOrderDatabase mOrderDb = MyOrderDatabase.getInstance(getContext());
+        final Cursor data = mOrderDb.getData();
 
-        getFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, orderFragment)
-                .addToBackStack(null)
-                .commit();
+        mOrderDb.addItem(s, 1);
+        Log.d("on list click", s);
     }
 }

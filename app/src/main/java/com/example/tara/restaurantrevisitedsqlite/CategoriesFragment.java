@@ -1,8 +1,6 @@
 package com.example.tara.restaurantrevisitedsqlite;
 
-
 import android.content.Context;
-import android.net.http.RequestQueue;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -42,10 +39,13 @@ public class CategoriesFragment extends ListFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Toast.makeText(getContext(), "inslide", Toast.LENGTH_SHORT).show();
+
         // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(this.getContext());
+        com.android.volley.RequestQueue queue = Volley.newRequestQueue(this.getContext());
+
         // add adapter to adapt categories into views
-        String url = "http://resto.mprog.nl/categories";
+        String url = "https://resto.mprog.nl/categories";
 
         // request string response from url
         JsonObjectRequest jObjRequest = new JsonObjectRequest(
@@ -72,7 +72,7 @@ public class CategoriesFragment extends ListFragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 System.out.println("No internet connection");
-                Toast.makeText(getContext(), "No internet connection", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "No Internet connection", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onErrorResponse: No internet connection", error);
             }
         });

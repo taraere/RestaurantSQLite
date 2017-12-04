@@ -27,9 +27,9 @@ public class MenuAdapter extends ResourceCursorAdapter {
         TextView titleView = view.findViewById(R.id.title);
         titleView.setText(title);
 
-        // set price
+        // set amount
         String price = cursor.getString(cursor.getColumnIndex("price"));
-        TextView priceView = view.findViewById(R.id.price);
+        TextView priceView = view.findViewById(R.id.amount);
         priceView.setText(price);
     }
 }
