@@ -17,39 +17,35 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class OrderFragment extends DialogFragment {
 
-    private MyOrderDatabase mOrderDb;
+    MyOrderDatabase mOrderDb;
     private OrderAdapter orderAdapter;
-//    private List<String> yourOrder = new ArrayList<>();
     private ListView listView;
     private Context theContext;
-    private TextView amount;
     private TextView yourOrder;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d("taart", "cake2");
 
         theContext = getActivity();
-
-        View mView = inflater.inflate(R.layout.fragment_order, container, false);
-        listView = mView.findViewById(R.id.list_view);
-
-        amount = mView.findViewById(R.id.amount);
-        yourOrder = mView.findViewById(R.id.your_order);
-        listView.setOnItemClickListener(new ItemClickListener());
-
         mOrderDb = MyOrderDatabase.getInstance(theContext.getApplicationContext());
 
+        View mView = inflater.inflate(R.layout.fragment_order, container, false);
+        View layoView = inflater.inflate(R.layout.row_layout, container, false);
+//        yourOrder = layoView.findViewById(R.id.title);
 
+        yourOrder = mView.findViewById(R.id.THIS_title);
 
-
+        listView = mView.findViewById(R.id.list_view);
+        listView.setOnItemClickListener(new ItemClickListener());
 
 
         // Inflate the layout for this fragment
@@ -63,22 +59,27 @@ public class OrderFragment extends DialogFragment {
             TextView title = view.findViewById(R.id.title);
 
             final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(theContext);
-            alertDialogBuilder.setMessage("Are you sure you want to delete " + title + "?");
+            final CharSequence name = title.getText();
+            alertDialogBuilder.setMessage("Are you sure you want to delete " + name);
+            alertDialogBuilder.setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // if this button is clicked, delete and close
+                    String newName = name.toString();
+                    mOrderDb.delete(newName);
+                    // current activity
+                }
+            });
 
             AlertDialog alertDialog = alertDialogBuilder.create();
             alertDialog.show();
         }
     }
 
-
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
 
-        Log.d("taart", "cake3");
-
         orderAdapter = new OrderAdapter(theContext.getApplicationContext(), mOrderDb.getData(), yourOrder);
-
         listView.setAdapter(orderAdapter);
     }
 

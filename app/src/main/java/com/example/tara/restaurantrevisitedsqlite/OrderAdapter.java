@@ -13,22 +13,24 @@ import android.widget.TextView;
  */
 
 public class OrderAdapter extends ResourceCursorAdapter {
+
     TextView yourOrder;
+
     public OrderAdapter(Context context, Cursor cursor, TextView textView){
         super(context, R.layout.row_layout, cursor);
-        Log.d("taart", "cake1");
         yourOrder = textView;
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        Log.d("taart", "cake");
-        String title = cursor.getString(cursor.getColumnIndex(MyOrderDatabase.COL_1));
-        Log.d("title", title);
-//        int amount = cursor.getInt(cursor.getColumnIndex("amount"));
 
-        TextView row = view.findViewById(R.id.amount);
+        String title = cursor.getString(cursor.getColumnIndex(MyOrderDatabase.COL_1));
+        TextView row = view.findViewById(R.id.title);
         row.setText(title);
-        yourOrder.setText(title);
+
+        String amountt = cursor.getString(cursor.getColumnIndex(MyOrderDatabase.COL_3));
+        TextView amm = view.findViewById(R.id.amount);
+        amm.setText("Amount: ");
+        amm.setText("Amount: " + amountt);
     }
 }

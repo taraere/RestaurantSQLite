@@ -7,20 +7,22 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.sql.ResultSet;
+import java.sql.Statement;
+
 /**
  * Created by Tara on 01/12/2017.
  */
 
 public class MyOrderDatabase extends SQLiteOpenHelper {
 
-    private static final String TABLE_NAME = "myorder";
-    private static final String KEY_ID = "_id";
+    static final String TABLE_NAME = "myorder";
+    static final String KEY_ID = "_id";
     public static final String COL_1 = "name";
-//    private static final String COL_2 = "price";
-    private static final String COL_3 = "amount";
-    private static final String[] COLUMNS = {KEY_ID, COL_1, COL_3};
-    private static final String TAG = "ToDoDatabase";
-    private static MyOrderDatabase instance;
+    public static final String COL_3 = "amount";
+    static final String[] COLUMNS = {KEY_ID, COL_1, COL_3};
+    static final String TAG = "ToDoDatabase";
+    static MyOrderDatabase instance;
 
     public static MyOrderDatabase getInstance(Context context) {
         if (instance == null) {
@@ -39,23 +41,22 @@ public class MyOrderDatabase extends SQLiteOpenHelper {
         String CREATE_MYORDER_TABLE = "CREATE TABLE " + TABLE_NAME + " ( " +
                 KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL_1 + " TEXT, " +
-//                COL_2 + " TEXT, " +
                 COL_3 + " INTEGER )";
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_1, "test");
-        contentValues.put(COL_3, 3);
+//        ContentValues contentValues = new ContentValues();
+//        contentValues.put(COL_1, "test");
+//        contentValues.put(COL_3, 3);
 
         // execute sql query
         db.execSQL(CREATE_MYORDER_TABLE);
 
-        db.insert(TABLE_NAME, null, contentValues);
+//        db.insert(TABLE_NAME, null, contentValues);
+//
+//        contentValues = new ContentValues();
+//        contentValues.put(COL_1, "test2");
+//        contentValues.put(COL_3, 3);
 
-        contentValues = new ContentValues();
-        contentValues.put(COL_1, "test2");
-        contentValues.put(COL_3, 3);
-
-        db.insert(TABLE_NAME, null, contentValues);
+//        db.insert(TABLE_NAME, null, contentValues);
     }
 
     @Override
@@ -71,10 +72,19 @@ public class MyOrderDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(COL_1, s);
-        Log.d(TAG, "addData: Adding " + s + " to " + TABLE_NAME);
+        String sql = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL_1 + " = '" + s +"'";
+        Cursor cursor = db.rawQuery(sql, null);
 
-        contentValues.put(COL_3, amount);
+        if (cursor.getCount() > 0) {
+            String already = "UPDATE " + TABLE_NAME + " SET " + COL_3 +
+                    " = " + COL_3 + " + 1 " + " WHERE " + COL_1 + " = '" + s + "'";
+            db.execSQL(already);
+        } else {
+            contentValues.put(COL_1, s);
+            contentValues.put(COL_3, 1);
+        }
+
+        Log.d(TAG, "addData: Adding " + s + " to " + TABLE_NAME);
         Log.d(TAG, "addData: Adding " + amount + " to " + TABLE_NAME);
 
         // long var for if data is correctly or incorrectly inserted
@@ -87,7 +97,7 @@ public class MyOrderDatabase extends SQLiteOpenHelper {
     public void clear() {
         SQLiteDatabase db = this.getWritableDatabase();
         // sql query
-        String query = "DELETE " + TABLE_NAME;
+        String query = "DELETE TABLE " + TABLE_NAME;
 
         // execute query
         db.execSQL(query);
@@ -110,13 +120,13 @@ public class MyOrderDatabase extends SQLiteOpenHelper {
     /**
      * Deletes info from database
      */
-    public void delete(long id) {
+    public void delete(String title) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "DELETE FROM " + TABLE_NAME + " WHERE "
-                + KEY_ID + " = '" + id + "'";
+                + COL_1 + " = '" + title + "'";
 
         Log.d(TAG, "delete: query: " + query);
-        Log.d(TAG, "delete: Deleting " + id + " from database.");
+        Log.d(TAG, "delete: Deleting " + title + " from database.");
         db.execSQL(query);
     }
 }

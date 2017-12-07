@@ -35,7 +35,6 @@ public class MenuFragment extends ListFragment {
 
     private List<String> foodPlatters = new ArrayList<>();
     private JSONObject c;
-    private MenuAdapter menuAdapter;
     String output;
 
     @Override
@@ -80,7 +79,7 @@ public class MenuFragment extends ListFragment {
 
                                     String sPrice = c.getString("price");
                                     String sName = c.getString("name");
-                                    output = sName + "    $" + sPrice + "0";
+                                    output = sName + "    $" + sPrice + "0   ";
                                     foodPlatters.add(output);
                                     Log.d("foodPlatters", String.valueOf(foodPlatters));
                                 }
@@ -118,8 +117,6 @@ public class MenuFragment extends ListFragment {
         // something with the adapters and putting things into sqlite
 
         MyOrderDatabase mOrderDb = MyOrderDatabase.getInstance(getContext());
-        final Cursor data = mOrderDb.getData();
-
         mOrderDb.addItem(s, 1);
         Log.d("on list click", s);
     }

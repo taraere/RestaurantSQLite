@@ -2,11 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
+    android:backgroundTint="#FF7F00"
+    android:background="#FF7F00"
     android:layout_height="match_parent"
     tools:context="com.example.tara.restaurantrevisitedsqlite.OrderFragment">
 
     <TextView
-        android:id="@+id/your_order"
+        android:id="@+id/THIS_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="start"

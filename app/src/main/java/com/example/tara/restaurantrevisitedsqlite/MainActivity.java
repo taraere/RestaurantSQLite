@@ -27,8 +27,8 @@ import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
+    public MyOrderDatabase mOrderDb;
     final Context context = this;
-    private CategoriesFragment mDataFragment;
     private static final String TAG_RETAINED_FRAGMENT = "CategoriesFragment";
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // find the retained fragment as activity restarts
+        // find the retained fragment as activity
         FragmentManager fm = getSupportFragmentManager();
 
         CategoriesFragment fragment = new CategoriesFragment();
@@ -64,8 +64,8 @@ public class MainActivity extends AppCompatActivity {
     return true;
     }
 
-
     public void dialogOrder(View view) {
+        mOrderDb = MyOrderDatabase.getInstance(getApplicationContext());
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = "https://resto.mprog.nl/order";
@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
                             String time = response.getString("preparation_time");
                             String message = "Please wait " + time + " minutes";
                             Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+//                            mOrderDb.clear();
                             finish();
                             startActivity(getIntent());
                         } catch (JSONException e) {
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(MainActivity.this, "Not connected to the internet", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Not connected to the Internet", Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -39,8 +39,6 @@ public class CategoriesFragment extends ListFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Toast.makeText(getContext(), "inslide", Toast.LENGTH_SHORT).show();
-
         // Instantiate the RequestQueue.
         com.android.volley.RequestQueue queue = Volley.newRequestQueue(this.getContext());
 
@@ -114,9 +112,4 @@ public class CategoriesFragment extends ListFragment {
                 getContext(), android.R.layout.simple_list_item_1, al);
         this.setListAdapter(adapter);
     }
-
-    public ArrayList<String> getFoodCategories() {
-        return foodCategories;
-    }
-
 }
